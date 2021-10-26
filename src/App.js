@@ -43,7 +43,7 @@ function App() {
         which contains a serverless <a href="https://golang.org/">Go</a>{' '}
         function. See{' '}
         <a href="/api/date">
-          <code>api/date</code> for the Date API with Go
+          <code>api/date</code> for the Date API with Go(This is gonna be NodeJS)
         </a>
         .
       </p>
