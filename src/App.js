@@ -7,7 +7,9 @@ function App() {
   useEffect(() => {
     async function getData() {
       const res = await fetch('/api/dummyapi', {method: "GET"});
-      console.log(res);
+      let json = await res.json();
+      //finally got the fucking data
+      console.log(json.rates.BTC);
     }
     getData();
   }, []);

@@ -5,6 +5,5 @@ module.exports = async (req, res) => {
     const fetch_response = await fetch(api_url);
     res.statusCode = 201;
     const json = await fetch_response.json();
-    console.log(json);
     res.json(json);
 }
