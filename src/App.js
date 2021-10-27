@@ -3,18 +3,17 @@ import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
-  const [date, setDate] = useState(null);
+  const [stuff, setStuff] = useState(null);
   useEffect(() => {
-    async function getDate() {
-      const res = await fetch('/api/date');
-      const newDate = await res.text();
-      setDate(newDate);
+    async function getData() {
+      const res = await fetch('/api/dummyapi', {method: "GET"});
+      console.log(res);
     }
-    getDate();
+    getData();
   }, []);
   return (
     <main>
-      <h1>Create React App + Go API</h1>
+      <h1>Create React App + Node JS API</h1>
       <h2>
         Deployed with{' '}
         <a
@@ -42,14 +41,9 @@ function App() {
         <code>/src</code> for components and content, and <code>/api</code>{' '}
         which contains a serverless <a href="https://golang.org/">Go</a>{' '}
         function. See{' '}
-        <a href="/api/date">
-          <code>api/date</code> for the Date API with Go(This is gonna be NodeJS)
-        </a>
         .
       </p>
       <br />
-      <h2>The date according to Go is:</h2>
-      <p>{date ? date : 'Loading date...'}</p>
     </main>
   );
 }

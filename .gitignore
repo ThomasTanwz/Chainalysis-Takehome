@@ -30,3 +30,5 @@ yarn-error.log*
 
 #stuff
 .idea*
+package-lock.json
+
