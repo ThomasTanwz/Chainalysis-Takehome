@@ -1,51 +1,51 @@
 import React from 'react';
+import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar} from 'recharts';
 import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
-  const [stuff, setStuff] = useState(null);
+  const [btc, setBTC] = useState({name: "BTC", price: 0});
+  const [eth, setETH] = useState({name: "ETH", price: 0});
+
   useEffect(() => {
+    //makes an async fetch call to our serverless function and fetches data from source
     async function getData() {
-      const res = await fetch('/api/dummyapi', {method: "GET"});
+      const res = await fetch('/api/exchanges', {method: "GET"});
       let json = await res.json();
-      //finally got the fucking data
-      console.log(json.rates.BTC);
+      json = json.filter(obj => {
+        return obj.name === 'Ethereum' || obj.name === 'Bitcoin'
+      });
+
+      setBTC({
+        name: json[0].name,
+        price: json[0].priceUsd
+      });
+      setETH({
+        name: json[1].name,
+        price: json[1].priceUsd
+      });
+      console.log(data);
     }
     getData();
   }, []);
+
+  const data = [btc, eth];
+
+  const renderLineChart = (
+      <BarChart width={600} height={400} data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey='price' fill="#8884d8" />
+      </BarChart>
+  );
+
   return (
     <main>
-      <h1>Create React App + Node JS API</h1>
-      <h2>
-        Deployed with{' '}
-        <a
-          href="https://vercel.com/docs"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          Vercel
-        </a>
-        !
-      </h2>
-      <p>
-        <a
-          href="https://github.com/vercel/vercel/tree/main/examples/create-react-app"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          This project
-        </a>{' '}
-        was bootstrapped with{' '}
-        <a href="https://facebook.github.io/create-react-app/">
-          Create React App
-        </a>{' '}
-        and contains three directories, <code>/public</code> for static assets,{' '}
-        <code>/src</code> for components and content, and <code>/api</code>{' '}
-        which contains a serverless <a href="https://golang.org/">Go</a>{' '}
-        function. See{' '}
-        .
-      </p>
-      <br />
+      <h1>BitCoin + Ethereum Exchange Reference</h1>
+      {renderLineChart}
     </main>
   );
 }

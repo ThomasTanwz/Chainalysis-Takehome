@@ -1,5 +1,5 @@
 main {
-  align-content: center;
+  align-content: flex-start;
   box-sizing: border-box;
   display: grid;
   font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
