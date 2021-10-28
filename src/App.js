@@ -1,8 +1,9 @@
 import React from 'react';
+import {DropdownButton, Dropdown }from 'react-bootstrap';
 import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar} from 'recharts';
 import { useEffect, useState } from 'react';
 import './App.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const [btc, setBTC] = useState({name: "BTC", price: 0});
   const [eth, setETH] = useState({name: "ETH", price: 0});
@@ -31,7 +32,7 @@ function App() {
 
   const data = [btc, eth];
 
-  const renderLineChart = (
+  const barChart = (
       <BarChart width={600} height={400} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
@@ -42,10 +43,23 @@ function App() {
       </BarChart>
   );
 
+  //move this to the right of chart
+  const dropDown = (
+      <DropdownButton id="dropdown-basic-button" title="Exchange Sources">
+          <Dropdown.Item href="#/action-1">Binance</Dropdown.Item>
+          <Dropdown.Item href="#/action-2">Bittrex</Dropdown.Item>
+          <Dropdown.Item href="#/action-3">CoinbasePro</Dropdown.Item>
+          <Dropdown.Item href="#/action-4">Kraken</Dropdown.Item>
+          <Dropdown.Item href="#/action-5">Kucoin</Dropdown.Item>
+          <Dropdown.Item href="#/action-3">Poloneix</Dropdown.Item>
+      </DropdownButton>
+  );
+
   return (
     <main>
       <h1>BitCoin + Ethereum Exchange Reference</h1>
-      {renderLineChart}
+        <div>{barChart}</div>
+        {dropDown}
     </main>
   );
 }
