@@ -42,3 +42,12 @@ code:before,
 code:after {
   content: '\`';
 }
+
+.flexbox-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.space {
+  margin-right: 50px;
+}
