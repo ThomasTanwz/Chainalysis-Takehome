@@ -2,15 +2,15 @@ main {
   align-content: flex-start;
   box-sizing: border-box;
   display: grid;
-  font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
-    'Arial', sans-serif;
+  font-family: 'Monospace', sans-serif;
   hyphens: auto;
   line-height: 1.65;
   margin: 0 auto;
-  max-width: 680px;
+  max-width: 900px;
   min-height: 100vh;
   padding: 72px 0;
   text-align: center;
+  color: mediumblue;
 }
 h1 {
   font-size: 45px;

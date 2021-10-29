@@ -3,6 +3,7 @@ import {DropdownButton, Dropdown }from 'react-bootstrap';
 import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar} from 'recharts';
 import { useEffect, useState } from 'react';
 import './App.css';
+import './App_Background.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const [btc, setBTC] = useState({name: "BTC", price: 0});
@@ -33,13 +34,13 @@ function App() {
   const data = [btc, eth];
 
   const barChart = (
-      <BarChart width={600} height={400} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
+      <BarChart width={850} height={500} data={data}>
+        <CartesianGrid strokeDasharray="3 3" fill="#ffffff"/>
+        <XAxis dataKey="name" stroke="#000000"/>
+        <YAxis stroke="#000000"/>
         <Tooltip />
         <Legend />
-        <Bar dataKey='price' fill="#8884d8" />
+        <Bar dataKey='price' fill="#f78502" />
       </BarChart>
   );
 

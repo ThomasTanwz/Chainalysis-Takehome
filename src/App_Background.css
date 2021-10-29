@@ -1,0 +1,14 @@
+/*https://s2-recruiting.cdn.greenhouse.io/external_greenhouse_job_boards/logos/400/382/400/original/Chainalysis_Mark_RGB_Orange.jpg?1568908388*/
+
+body{
+    background-image: url("https://s2-recruiting.cdn.greenhouse.io/external_greenhouse_job_boards/logos/400/382/400/original/Chainalysis_Mark_RGB_Orange.jpg?1568908388");
+    background-position: left top;
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: moveIcon 40s infinite;
+    border: 20px solid;
+}
+
+@keyframes moveIcon{
+    50% {background-position: center;}
+}
