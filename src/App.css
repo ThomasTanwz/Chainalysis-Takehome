@@ -51,3 +51,11 @@ code:after {
 .space {
   margin-right: 50px;
 }
+
+.textbox {
+  background-color: floralwhite;
+  padding: 15px;
+  color: black;
+  width: 500px;
+  white-space: pre-line;
+}

@@ -1,24 +1,30 @@
 import React from 'react';
 import {DropdownButton, Dropdown }from 'react-bootstrap';
-import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar} from 'recharts';
+import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar} from 'recharts';
 import { useEffect, useState } from 'react';
 import './App.css';
 import './App_Background.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-    //first, we declare state hooks to be used later
+    /* First, we declare state hooks to be used later
+    * ex1: Exchange 1 we are going to pull data from, activated upon user's selection from the dropdown menu.
+    * ex2: Exchange 1 we are going to pull data from, activated upon user's selection from the dropdown menu.
+    * options: User's selections from the dropdown menu.
+    * chartData: Data we use to fill the chart, which is changed every time user make a selection.
+    * */
   const [ex1, setEX1] = useState([{name: "BTC", price: 0}, {name: "ETH", price: 0}]);
   const [ex2, setEX2] = useState([{name: "BTC", price: 0}, {name: "ETH", price: 0}]);
   const [options, setOPT] = useState([{exchange: 'Exchange 1'}, {exchange: 'Exchange 2'}]);
   const [chartData, setChartData] = useState([{}]);
 
 
-    //makes an async fetch call to our serverless function and fetches data from source
+    //Make an async fetch call to our serverless function and fetches data from source if needed
     async function getData(index) {
+        //Send an Ajax GET to our backend API
         const res = await fetch(`/api/exchanges/?exchange=${options[index].exchange}`, {method: "GET"});
         let json = await res.json();
-        //We only want Ethereum and Bitcoin in our application
+        //We only want Ethereum and Bitcoin in our application.
         json = json.filter(obj => {
             return obj.name === 'Ethereum' || obj.name === 'Bitcoin'
         });
@@ -43,7 +49,6 @@ function App() {
         <XAxis dataKey="name" type="category" stroke="#000000"/>
         <YAxis stroke="#000000"/>
         <Tooltip />
-        <Legend />
         <Bar dataKey={options[0].exchange} fill="#f78502" />
           <Bar dataKey={options[1].exchange} fill="#036bfc" />
       </BarChart>
@@ -84,13 +89,9 @@ function App() {
       let data = [
           {
               "name": "Bitcoin",
-              // "exchange 1": ex1[0].name === 'Bitcoin'?ex1[0].price:ex1[1].price,
-              // "exchange 2": ex2[0].name === 'Bitcoin'?ex2[0].price:ex2[1].price
           },
           {
               "name": "Ethereum",
-              // "exchange 1": ex1[0].name === 'Ethereum'?ex1[0].price:ex1[1].price,
-              // "exchange 2": ex2[0].name === 'Ethereum'?ex2[0].price:ex2[1].price
           }
       ];
       data[0][options[0].exchange] = ex1[0].name === 'Bitcoin'?ex1[0].price:ex1[1].price;
@@ -101,14 +102,41 @@ function App() {
       setChartData(data);
   }, [ex1, ex2]);
 
+  const analysis = () => {
+      let exchange1 = options[0].exchange;
+      let exchange2 = options[1].exchange;
+      if(exchange1=== 'Exchange 1' && exchange2 === 'Exchange 2') {
+          return `Please select two sources for an analysis.`;
+      }
+      if(exchange1!== 'Exchange 1' && exchange2 === 'Exchange 2'){
+          return `Exchange 1 selected: ${exchange1}, select Exchange 2 for an analysis.`;
+      }
+      if(exchange1=== 'Exchange 1' && exchange2 !== 'Exchange 2'){
+          return `Exchange 2 selected: ${exchange2}, select Exchange 1 for an analysis.`;
+      }
+      let btce1 = ex1[0].price, btce2 = ex2[0].price;
+      let ethe1 = ex1[1].price, ethe2 = ex2[1].price;
+      //a little hack to get the values in order
+      if(btce1 < ethe1) [btce1, ethe1] = [ethe1, btce1];
+      if(btce2 < ethe2) [btce2, ethe2] = [ethe2, btce2];
+      return `Exchange 1: ${exchange1}, Exchange 2: ${exchange2}.
+      ${exchange1} is selling Bitcoin at ${btce1} USD and Ethereum at ${ethe1} USD.
+      ${exchange2} is selling Bitcoin at ${btce2} USD and Ethereum at ${ethe2} USD.
+      Buy Bitcoin at ${btce1<btce2?(exchange1):(exchange2)} and sell at ${btce1>btce2?(exchange1):(exchange2)}.
+      Buy Ethereum at ${ethe1<ethe2?(exchange1):(exchange2)} and sell at ${ethe1>ethe2?(exchange1):(exchange2)}.
+      Potential Bitcoin profit: ${Math.abs(btce1-btce2).toFixed(2)} USD per unit.
+      Potential Ethereum profit: ${Math.abs(ethe1-ethe2).toFixed(2)} USD per unit.`;
+  }
   return (
     <main>
-      <h1>BitCoin + Ethereum Exchange Reference</h1>
+      <h1>BitCoin + Ethereum Exchange Analyzer</h1>
         <div>{barChart}</div>
         <div className="flexbox-container">
-            <div className="space"><DropDown name="exchange1" id='1'/></div>
-            <div><DropDown name="exchange2" id='2'/></div>
-            <div><h4>{options.map(home => <div>{home.exchange}</div>)}</h4></div>
+            <div className="space"><DropDown name="Exchange 1" id='1'/></div>
+            <div className="space"><DropDown name="Exchange 2" id='2'/></div>
+            <div className="textbox">
+                {analysis()}
+            </div>
         </div>
     </main>
   );
