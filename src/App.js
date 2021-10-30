@@ -1,13 +1,21 @@
+/*
+* Author: Wenze Tan
+* Email: thomastanwz@gmail.com
+* Live Demo: http://chainalysis-takehome.vercel.app/
+* Project Repo: https://github.com/ThomasTanwz/Chainalysis-Takehome
+* Date: 10/30/2021
+* Project Description: This is my take-home assignment for Chainalysis
+* */
+
 import React from 'react';
 import {DropdownButton, Dropdown }from 'react-bootstrap';
 import {BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar} from 'recharts';
 import { useEffect, useState } from 'react';
 import './App.css';
-import './App_Background.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-    /* First, we declare state hooks to be used later
+    /* State hooks to be used later
     * ex1: Exchange 1 we are going to pull data from, activated upon user's selection from the dropdown menu.
     * ex2: Exchange 1 we are going to pull data from, activated upon user's selection from the dropdown menu.
     * options: User's selections from the dropdown menu.
@@ -21,14 +29,15 @@ function App() {
 
     //Make an async fetch call to our serverless function and fetches data from source if needed
     async function getData(index) {
-        //Send an Ajax GET to our backend API
+        //Send an Ajax GET to our backend API(see api/exchange.js)
         const res = await fetch(`/api/exchanges/?exchange=${options[index].exchange}`, {method: "GET"});
         let json = await res.json();
-        //We only want Ethereum and Bitcoin in our application.
+        //Only show Ethereum and Bitcoin on the webpage application.
         json = json.filter(obj => {
             return obj.name === 'Ethereum' || obj.name === 'Bitcoin'
         });
 
+        //Update the corresponding state hook that made the call
         let newEx = (index === 0)?([...ex1]):([...ex2]);
         newEx[0].name = json[0].name;
         newEx[0].price = json[0].priceUsd;
@@ -42,7 +51,7 @@ function App() {
     }
 
 
-  //bar chart we use to visualize the data
+  //Bar chart used to visualize the data. Library used: Recharts
   const barChart = (
       <BarChart width={850} height={500} data={chartData}>
         <CartesianGrid strokeDasharray="3 3" fill="#ffffff"/>
@@ -55,7 +64,7 @@ function App() {
   );
 
 
-  //reusable dropdown
+  //Reusable drop-down component
   function DropDown(props){
       return (
         <DropdownButton id="dropdown-basic-button" title={props.name} onSelect=
@@ -70,7 +79,7 @@ function App() {
     );
   }
 
-  //dropdown button handlers
+  //Dropdown button handlers. Could be rewritten as a single function
   const dropDownHandler1 = event => {
       let copy = [...options];
       copy[0].exchange = event;
@@ -84,6 +93,9 @@ function App() {
       getData(1);
   }
 
+  /*
+  * Update the data we pass into the barchart as soon as ex1/ex2 is updated by user's selection
+  * */
   useEffect(()=>{
       //data we use to make the barchart
       let data = [
@@ -98,10 +110,13 @@ function App() {
       data[0][options[1].exchange] = ex2[0].name === 'Bitcoin'?ex2[0].price:ex2[1].price;
       data[1][options[0].exchange] = ex1[0].name === 'Ethereum'?ex1[0].price:ex1[1].price;
       data[1][options[1].exchange] = ex2[0].name === 'Ethereum'?ex2[0].price:ex2[1].price;
-      console.log(data);
       setChartData(data);
   }, [ex1, ex2]);
 
+  /*
+  * Generate analysis based on user's input.
+  * Fully utilizes template literals.
+  * */
   const analysis = () => {
       let exchange1 = options[0].exchange;
       let exchange2 = options[1].exchange;
@@ -119,9 +134,10 @@ function App() {
       }
       let btce1 = ex1[0].price, btce2 = ex2[0].price;
       let ethe1 = ex1[1].price, ethe2 = ex2[1].price;
-      //a little hack to get the values in order
+      //a little hack to get the values in order(sometimes the api returns BTC and ETH in reverse order)
       if(btce1 < ethe1) [btce1, ethe1] = [ethe1, btce1];
       if(btce2 < ethe2) [btce2, ethe2] = [ethe2, btce2];
+      //our final analysis if user's input is valid
       return `Exchange 1: ${exchange1}, Exchange 2: ${exchange2}.
       ${exchange1} is selling Bitcoin at ${btce1} USD and Ethereum at ${ethe1} USD.
       ${exchange2} is selling Bitcoin at ${btce2} USD and Ethereum at ${ethe2} USD.
@@ -130,9 +146,14 @@ function App() {
       Potential Bitcoin profit: ${Math.abs(btce1-btce2).toFixed(2)} USD per unit.
       Potential Ethereum profit: ${Math.abs(ethe1-ethe2).toFixed(2)} USD per unit.`;
   }
+
+  /*
+  * Return our final app, which consists of:
+  * title + bar chart + two drop-down menus + analysis text box
+  * */
   return (
     <main>
-      <h1>BitCoin + Ethereum Exchange Analyzer</h1>
+      <h1>Bitcoin + Ethereum Exchange Analyzer</h1>
         <div>{barChart}</div>
         <div className="flexbox-container">
             <div className="space"><DropDown name="Exchange 1" id='1'/></div>

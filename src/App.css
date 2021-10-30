@@ -1,3 +1,12 @@
+/*
+* Author: Wenze Tan
+* Email: thomastanwz@gmail.com
+* Live Demo: http://chainalysis-takehome.vercel.app/
+* Project Repo: https://github.com/ThomasTanwz/Chainalysis-Takehome
+* Date: 10/30/2021
+* Project Description: This is my take-home assignment for Chainalysis
+* */
+
 main {
   align-content: flex-start;
   box-sizing: border-box;
@@ -58,4 +67,20 @@ code:after {
   color: black;
   width: 500px;
   white-space: pre-line;
+}
+
+/*
+Moving background for the webpage
+*/
+body{
+  background-image: url("https://s2-recruiting.cdn.greenhouse.io/external_greenhouse_job_boards/logos/400/382/400/original/Chainalysis_Mark_RGB_Orange.jpg?1568908388");
+  background-position: left top;
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: moveIcon 40s infinite;
+  border: 20px solid;
+}
+
+@keyframes moveIcon{
+  50% {background-position: center;}
 }
