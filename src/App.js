@@ -114,6 +114,9 @@ function App() {
       if(exchange1=== 'Exchange 1' && exchange2 !== 'Exchange 2'){
           return `Exchange 2 selected: ${exchange2}, select Exchange 1 for an analysis.`;
       }
+      if(exchange1 === exchange2){
+          return `Please select two different sources. You have only selected: ${exchange1}.`
+      }
       let btce1 = ex1[0].price, btce2 = ex2[0].price;
       let ethe1 = ex1[1].price, ethe2 = ex2[1].price;
       //a little hack to get the values in order
