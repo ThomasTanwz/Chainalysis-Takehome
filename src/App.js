@@ -8,48 +8,44 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
     //first, we declare state hooks to be used later
-  const [btc, setBTC] = useState({name: "BTC", price: 0});
-  const [eth, setETH] = useState({name: "ETH", price: 0});
-  const [options, setOPT] = useState([{exchange: 'ex1'}, {exchange: 'ex2'}]);
+  const [ex1, setEX1] = useState([{name: "BTC", price: 0}, {name: "ETH", price: 0}]);
+  const [ex2, setEX2] = useState([{name: "BTC", price: 0}, {name: "ETH", price: 0}]);
+  const [options, setOPT] = useState([{exchange: 'Exchange 1'}, {exchange: 'Exchange 2'}]);
+  const [chartData, setChartData] = useState([{}]);
 
-  //hard coded data for testing
-    //TODO: Get from options
-  const exchange = "kraken";
 
-  useEffect(() => {
     //makes an async fetch call to our serverless function and fetches data from source
-    async function getData() {
-      const res = await fetch(`/api/exchanges/?exchange=${exchange}`, {method: "GET"});
-      let json = await res.json();
-      //We only want Ethereum and Bitcoin in our application
-      json = json.filter(obj => {
-        return obj.name === 'Ethereum' || obj.name === 'Bitcoin'
-      });
+    async function getData(index) {
+        const res = await fetch(`/api/exchanges/?exchange=${options[index].exchange}`, {method: "GET"});
+        let json = await res.json();
+        //We only want Ethereum and Bitcoin in our application
+        json = json.filter(obj => {
+            return obj.name === 'Ethereum' || obj.name === 'Bitcoin'
+        });
 
-      setBTC({
-        name: json[0].name,
-        price: json[0].priceUsd
-      });
-      setETH({
-        name: json[1].name,
-        price: json[1].priceUsd
-      });
-
+        let newEx = (index === 0)?([...ex1]):([...ex2]);
+        newEx[0].name = json[0].name;
+        newEx[0].price = json[0].priceUsd;
+        newEx[1].name = json[1].name;
+        newEx[1].price = json[1].priceUsd;
+        if(index === 0){
+            setEX1(newEx);
+        }else{
+            setEX2(newEx);
+        }
     }
-    getData();
-  }, []);
 
-  const data = [btc, eth];
 
   //bar chart we use to visualize the data
   const barChart = (
-      <BarChart width={850} height={500} data={data}>
+      <BarChart width={850} height={500} data={chartData}>
         <CartesianGrid strokeDasharray="3 3" fill="#ffffff"/>
-        <XAxis dataKey="name" stroke="#000000"/>
+        <XAxis dataKey="name" type="category" stroke="#000000"/>
         <YAxis stroke="#000000"/>
         <Tooltip />
         <Legend />
-        <Bar dataKey='price' fill="#f78502" />
+        <Bar dataKey={options[0].exchange} fill="#f78502" />
+          <Bar dataKey={options[1].exchange} fill="#036bfc" />
       </BarChart>
   );
 
@@ -64,25 +60,46 @@ function App() {
             <Dropdown.Item eventKey="coinbasepro">CoinbasePro</Dropdown.Item>
             <Dropdown.Item eventKey="kraken">Kraken</Dropdown.Item>
             <Dropdown.Item eventKey="kucoin">Kucoin</Dropdown.Item>
-            <Dropdown.Item eventKey="poloneix">Poloneix</Dropdown.Item>
+            <Dropdown.Item eventKey="poloniex">Poloniex</Dropdown.Item>
         </DropdownButton>
     );
   }
 
-  //dropdown button handler
+  //dropdown button handlers
   const dropDownHandler1 = event => {
       let copy = [...options];
       copy[0].exchange = event;
       setOPT(copy);
-      console.log(event);
+      getData(0);
   }
-
   const dropDownHandler2 = event => {
       let copy = [...options];
       copy[1].exchange = event;
       setOPT(copy);
-      console.log(event);
+      getData(1);
   }
+
+  useEffect(()=>{
+      //data we use to make the barchart
+      let data = [
+          {
+              "name": "Bitcoin",
+              // "exchange 1": ex1[0].name === 'Bitcoin'?ex1[0].price:ex1[1].price,
+              // "exchange 2": ex2[0].name === 'Bitcoin'?ex2[0].price:ex2[1].price
+          },
+          {
+              "name": "Ethereum",
+              // "exchange 1": ex1[0].name === 'Ethereum'?ex1[0].price:ex1[1].price,
+              // "exchange 2": ex2[0].name === 'Ethereum'?ex2[0].price:ex2[1].price
+          }
+      ];
+      data[0][options[0].exchange] = ex1[0].name === 'Bitcoin'?ex1[0].price:ex1[1].price;
+      data[0][options[1].exchange] = ex2[0].name === 'Bitcoin'?ex2[0].price:ex2[1].price;
+      data[1][options[0].exchange] = ex1[0].name === 'Ethereum'?ex1[0].price:ex1[1].price;
+      data[1][options[1].exchange] = ex2[0].name === 'Ethereum'?ex2[0].price:ex2[1].price;
+      console.log(data);
+      setChartData(data);
+  }, [ex1, ex2]);
 
   return (
     <main>
